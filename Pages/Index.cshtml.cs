@@ -20,7 +20,6 @@ using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
 using Amazon.Runtime;
 
-
 namespace InreachWebapp.Pages
 {
   public class UploadFileModel : PageModel
@@ -28,7 +27,6 @@ namespace InreachWebapp.Pages
     private const string bucketName = "inreachapplicationtest";
     // private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USEast1;
     private static IAmazonS3 s3Client;
-
     public static string URLString { get; set; }
     public static string UserEmail { get; set; }
     private IHostingEnvironment _environment;
@@ -36,7 +34,6 @@ namespace InreachWebapp.Pages
     {
       _environment = environment;
     }
-
     [BindProperty]
     public IFormFile Upload { get; set; }
     public async Task OnPostAsync(string email)
@@ -47,7 +44,6 @@ namespace InreachWebapp.Pages
       UploadObject(url[0]);
       SendMail(url[1]);
     }
-
     private async Task UploadObject(string url)
     {
       var fileTransferUtility =
@@ -64,11 +60,9 @@ namespace InreachWebapp.Pages
       {
         await fileTransferUtility.UploadAsync(fileToUpload,
                                    bucketName, Upload.FileName);
-
       }
       FileInfo fileToDelete = new FileInfo(file);
       fileToDelete.Delete();
-
     }
 
     private string[] GeneratePresignedUrl()
@@ -99,7 +93,6 @@ namespace InreachWebapp.Pages
       Console.WriteLine(url2);
       return urls;
     }
-
     protected void SendMail(string url)
     {
 
