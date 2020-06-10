@@ -26,7 +26,7 @@ namespace InreachWebapp.Pages
   public class UploadFileModel : PageModel
   {
     private const string bucketName = "inreachapplicationtest";
-    private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USEast1;
+    // private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USEast1;
     private static IAmazonS3 s3Client;
 
     public static string URLString { get; set; }
@@ -42,46 +42,100 @@ namespace InreachWebapp.Pages
     public async Task OnPostAsync(string email)
     {
       s3Client = new AmazonS3Client();
-      UploadFileAsync().Wait();
+      var url = GeneratePresignedUrl();
+      UploadObject(url[0]);
+      SendEmail(url[1]);
+      // UploadFileAsync().Wait();
     }
 
-    private async Task UploadFileAsync()
+    private async Task UploadObject(string url)
     {
-      var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
-      using (var fileStream = new FileStream(file, FileMode.Create))
+      HttpWebRequest httpRequest = WebRequest.Create(url) as HttpWebRequest;
+      httpRequest.Method = "PUT";
+      using (Stream dataStream = httpRequest.GetRequestStream())
       {
-        await Upload.CopyToAsync(fileStream);
-      }
-      try
-      {
-        var fileTransferUtility = new TransferUtility(s3Client);
-
-        await fileTransferUtility.UploadAsync(file, bucketName, Upload.FileName);
-        Console.WriteLine("Upload Complete");
-        Console.WriteLine(URLString);
-        HeadersCollection collection = new HeadersCollection() { };
-        collection.ContentLength = Upload.Length;
-        collection.ContentDisposition = "attachment";
-        GetPreSignedUrlRequest request1 = new GetPreSignedUrlRequest
+        var buffer = new byte[8000];
+        var file = Path.Combine(Upload.FileName);
+        using (var stream = System.IO.File.Create(file))
         {
-          BucketName = bucketName,
-          Key = Upload.FileName,
-          Expires = DateTime.Now.AddMinutes(10),
-          ContentType = "applicatoin/octet-stream",
-        };
-
-        URLString = s3Client.GetPreSignedURL(request1);
-        Console.WriteLine($"Yo yo {URLString}");
+          int bytesRead = 0;
+          while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+          {
+            dataStream.Write(buffer, 0, bytesRead);
+          }
+        }
       }
-      catch (AmazonS3Exception e)
-      {
-        Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
-      }
-      catch (Exception e)
-      {
-        Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
-      }
+      HttpWebResponse response = httpRequest.GetResponse() as HttpWebResponse;
     }
+
+    private string[] GeneratePresignedUrl()
+    {
+      string[] urls = { "", "" };
+      var request = new GetPreSignedUrlRequest
+      {
+        BucketName = bucketName,
+        Key = Upload.FileName,
+        Verb = HttpVerb.PUT,
+        Expires = DateTime.Now.AddMinutes(5)
+
+      };
+
+
+      var request2 = new GetPreSignedUrlRequest
+      {
+        BucketName = bucketName,
+        Key = Upload.FileName,
+        Verb = HttpVerb.GET,
+        Expires = DateTime.Now.AddMinutes(5)
+
+      };
+
+      string url = s3Client.GetPreSignedURL(request);
+      string url2 = s3Client.GetPreSignedURL(request2);
+      urls[0] = url;
+      urls[1] = url2;
+      Console.WriteLine(url2);
+      return urls;
+    }
+    // private async Task UploadFileAsync()
+    // {
+    //   var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
+    //   using (var fileStream = new FileStream(file, FileMode.Create))
+    //   {
+    //     await Upload.CopyToAsync(fileStream);
+    //   }
+    //   try
+    //   {
+    //     var fileTransferUtility = new TransferUtility(s3Client);
+
+    //     await fileTransferUtility.UploadAsync(file, bucketName, Upload.FileName);
+    //     Console.WriteLine("Upload Complete");
+    //     Console.WriteLine(URLString);
+
+
+    //     HeadersCollection collection = new HeadersCollection() { };
+    //     collection.ContentLength = Upload.Length;
+    //     collection.ContentDisposition = "attachment";
+    //     GetPreSignedUrlRequest request1 = new GetPreSignedUrlRequest
+    //     {
+    //       BucketName = bucketName,
+    //       Key = Upload.FileName,
+    //       Expires = DateTime.Now.AddMinutes(10),
+    //       ContentType = "applicatoin/octet-stream",
+    //     };
+
+    //     URLString = s3Client.GetPreSignedURL(request1);
+    //     Console.WriteLine($"Yo yo {URLString}");
+    //   }
+    //   catch (AmazonS3Exception e)
+    //   {
+    //     Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
+    //   }
+    //   catch (Exception e)
+    //   {
+    //     Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
+    //   }
+    // }
 
   }
 }
