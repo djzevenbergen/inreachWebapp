@@ -4,6 +4,7 @@ uploads/
 appsettings.json
 appsettings.Development.json
 EnvironmentVariables.cs
+App.config
 
 
  

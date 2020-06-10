@@ -41,18 +41,12 @@ namespace InreachWebapp.Pages
     public IFormFile Upload { get; set; }
     public async Task OnPostAsync(string email)
     {
-      var accessKey = EnvironmentVariables.AccessKey;// Get access key from a secure store
-      var secretKey = EnvironmentVariables.SecretKey;// Get secret key from a secure store
-      s3Client = new AmazonS3Client(accessKey, secretKey, bucketRegion);
+      s3Client = new AmazonS3Client();
       UploadFileAsync().Wait();
-
-      // Email.DoEmail(email, URLString).Wait();
     }
 
     private async Task UploadFileAsync()
     {
-
-
       var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
       using (var fileStream = new FileStream(file, FileMode.Create))
       {
