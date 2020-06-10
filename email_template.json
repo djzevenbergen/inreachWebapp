@@ -1,0 +1,7 @@
+{
+  "Template": {
+    "TemplateName": "my-email-template",
+    "SubjectPart": "Your file link",
+    "HtmlPart": "<h1>Hello {{firstname}}</h1><p>Welcome as a new user on our amazing service.</p>"
+  }
+}
