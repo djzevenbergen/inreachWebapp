@@ -44,7 +44,6 @@ namespace InreachWebapp.Pages
       s3Client = new AmazonS3Client();
       var url = GeneratePresignedUrl();
       UploadObject(url[0]);
-      SendEmail(url[1]);
       // UploadFileAsync().Wait();
     }
 
@@ -55,7 +54,7 @@ namespace InreachWebapp.Pages
       using (Stream dataStream = httpRequest.GetRequestStream())
       {
         var buffer = new byte[8000];
-        var file = Path.Combine(Upload.FileName);
+        var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
         using (var stream = System.IO.File.Create(file))
         {
           int bytesRead = 0;
@@ -80,7 +79,6 @@ namespace InreachWebapp.Pages
 
       };
 
-
       var request2 = new GetPreSignedUrlRequest
       {
         BucketName = bucketName,
@@ -97,46 +95,6 @@ namespace InreachWebapp.Pages
       Console.WriteLine(url2);
       return urls;
     }
-    // private async Task UploadFileAsync()
-    // {
-    //   var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
-    //   using (var fileStream = new FileStream(file, FileMode.Create))
-    //   {
-    //     await Upload.CopyToAsync(fileStream);
-    //   }
-    //   try
-    //   {
-    //     var fileTransferUtility = new TransferUtility(s3Client);
-
-    //     await fileTransferUtility.UploadAsync(file, bucketName, Upload.FileName);
-    //     Console.WriteLine("Upload Complete");
-    //     Console.WriteLine(URLString);
-
-
-    //     HeadersCollection collection = new HeadersCollection() { };
-    //     collection.ContentLength = Upload.Length;
-    //     collection.ContentDisposition = "attachment";
-    //     GetPreSignedUrlRequest request1 = new GetPreSignedUrlRequest
-    //     {
-    //       BucketName = bucketName,
-    //       Key = Upload.FileName,
-    //       Expires = DateTime.Now.AddMinutes(10),
-    //       ContentType = "applicatoin/octet-stream",
-    //     };
-
-    //     URLString = s3Client.GetPreSignedURL(request1);
-    //     Console.WriteLine($"Yo yo {URLString}");
-    //   }
-    //   catch (AmazonS3Exception e)
-    //   {
-    //     Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
-    //   }
-    //   catch (Exception e)
-    //   {
-    //     Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
-    //   }
-    // }
-
   }
 }
 
