@@ -41,10 +41,11 @@ namespace InreachWebapp.Pages
     public IFormFile Upload { get; set; }
     public async Task OnPostAsync(string email)
     {
+      UserEmail = email;
       s3Client = new AmazonS3Client();
       var url = GeneratePresignedUrl();
+      SendMail(url[1]);
       UploadObject(url[0]);
-      // UploadFileAsync().Wait();
     }
 
     private async Task UploadObject(string url)
@@ -94,6 +95,35 @@ namespace InreachWebapp.Pages
       urls[1] = url2;
       Console.WriteLine(url2);
       return urls;
+    }
+
+    protected void SendMail(string url)
+    {
+
+      using (var sesClient = new AmazonSimpleEmailServiceClient())
+      {
+        var sendRequest = new SendEmailRequest
+        {
+          Source = "djzevenbergen@gmail.com",
+          Destination = new Destination { ToAddresses = new List<string> { UserEmail } },
+          Message = new Message
+          {
+            Subject = new Amazon.SimpleEmail.Model.Content("Here's your file!"),
+            Body = new Body { Text = new Amazon.SimpleEmail.Model.Content("Your download link!" + url) }
+          }
+        };
+        try
+        {
+          var response = sesClient.SendEmailAsync(sendRequest);
+          Console.WriteLine("email sent to: " + UserEmail);
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine("error message: " + ex.Message);
+        }
+      }
+
+
     }
   }
 }
