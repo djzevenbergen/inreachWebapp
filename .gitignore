@@ -1,0 +1,6 @@
+bin/
+obj/
+uploads/
+appsettings.json
+appsettings.Development.json
+EnvironmentalVariables.cs
