@@ -44,28 +44,31 @@ namespace InreachWebapp.Pages
       UserEmail = email;
       s3Client = new AmazonS3Client();
       var url = GeneratePresignedUrl();
-      SendMail(url[1]);
       UploadObject(url[0]);
+      SendMail(url[1]);
     }
 
     private async Task UploadObject(string url)
     {
-      HttpWebRequest httpRequest = WebRequest.Create(url) as HttpWebRequest;
-      httpRequest.Method = "PUT";
-      using (Stream dataStream = httpRequest.GetRequestStream())
+      var fileTransferUtility =
+           new TransferUtility(s3Client);
+
+      // Option 3. Upload data from a type of System.IO.Stream.
+      var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
+      using (FileStream stream = new FileStream(file, FileMode.Create))
       {
-        var buffer = new byte[8000];
-        var file = Path.Combine(_environment.ContentRootPath, "uploads", Upload.FileName);
-        using (var stream = System.IO.File.Create(file))
-        {
-          int bytesRead = 0;
-          while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-          {
-            dataStream.Write(buffer, 0, bytesRead);
-          }
-        }
+        await Upload.CopyToAsync(stream);
       }
-      HttpWebResponse response = httpRequest.GetResponse() as HttpWebResponse;
+      using (var fileToUpload =
+          new FileStream(file, FileMode.Open, FileAccess.Read))
+      {
+        await fileTransferUtility.UploadAsync(fileToUpload,
+                                   bucketName, Upload.FileName);
+
+      }
+      FileInfo fileToDelete = new FileInfo(file);
+      fileToDelete.Delete();
+
     }
 
     private string[] GeneratePresignedUrl()
@@ -122,8 +125,6 @@ namespace InreachWebapp.Pages
           Console.WriteLine("error message: " + ex.Message);
         }
       }
-
-
     }
   }
 }
