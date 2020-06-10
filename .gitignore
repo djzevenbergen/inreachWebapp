@@ -3,4 +3,7 @@ obj/
 uploads/
 appsettings.json
 appsettings.Development.json
-EnvironmentalVariables.cs
+EnvironmentVariables.cs
+
+"Principal": { "AWS": "480301662767" }
+ 
