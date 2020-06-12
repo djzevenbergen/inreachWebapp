@@ -4,6 +4,13 @@ This application uses C#/.NET, S3, and MailKit to take in an Uploaded file, uplo
 
 ##setup
 
+##_View webpage  http://18.234.151.62/ _
+
+##Bugs
+
+It seems to be sending the link twice or three times. I'm sure it's fixable, I'll just need to spend more time working on it.
+
+
 locate to the root directory
 
 touch App.config
