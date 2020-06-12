@@ -2,15 +2,16 @@ Created by DJ Zevenbergen
 
 This application uses C#/.NET, S3, and MailKit to take in an Uploaded file, upload it to S3, and then email a link to that file to the email provided by the user. It is deployed to EC2 using Docker and ECR.
 
-##setup
+## setup
 
-##_View webpage  http://18.234.151.62/ _
+## _View webpage  http://18.234.151.62/ _
 
-##Bugs
+## Bugs
 
 It seems to be sending the link twice or three times. I'm sure it's fixable, I'll just need to spend more time working on it.
 
 
+## Some (not all) Directions
 locate to the root directory
 
 touch App.config
@@ -60,8 +61,9 @@ populate appsettings.Development.json with:
 }
 
 "
-
-
 dotnet build
+
+
+
 
 MIT License 2020
