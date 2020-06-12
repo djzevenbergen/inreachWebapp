@@ -1,6 +1,6 @@
 Created by DJ Zevenbergen
 
-This application uses C#/.NET, S3, and MailKit to take in an Uploaded file, upload it to S3, and then email a link to that file to the email provided by the user.
+This application uses C#/.NET, S3, and MailKit to take in an Uploaded file, upload it to S3, and then email a link to that file to the email provided by the user. It is deployed to EC2 using Docker and ECR.
 
 ##setup
 
