@@ -4,7 +4,7 @@ This application uses C#/.NET, S3, and MailKit to take in an Uploaded file, uplo
 
 ## setup
 
-## _View webpage  http://18.234.151.62/ _
+## _View webpage  http://34.202.230.95 _
 
 ## Bugs
 
