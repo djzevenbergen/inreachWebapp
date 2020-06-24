@@ -70,7 +70,7 @@ set up a ECR repo
 
 
 
-aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
+aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin (account-id).dkr.ecr.(region).amazonaws.com
   
 docker tag (source-image) (account-id).dkr.ecr.(region).amazonaws.com/(repo-name)/(any-tag)
 docker push (account-id).dkr.ecr.(region).amazonaws.com/(repo-name)/(any-tag)
@@ -82,9 +82,9 @@ https://itnext.io/run-your-containers-on-aws-fargate-c2d4f6a47fda
 
 Inside my container definitions I used the environmental variables
 
-AWS_ACCESS_KEY_ID=<key>
-AWS_SECRET_ACCESS_KEY=<secret-key>
-AWS_DEFAULT_REGION=<region>
+AWS_ACCESS_KEY_ID=(key)
+AWS_SECRET_ACCESS_KEY=(secret-key)
+AWS_DEFAULT_REGION=(region)
 
 
 MIT License 2020
