@@ -72,8 +72,8 @@ set up a ECR repo
 
 aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
   
-docker tag <source-image> <account-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>/<any-tag>
-docker push <account-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>/<any-tag>
+docker tag (source-image) (account-id).dkr.ecr.(region).amazonaws.com/(repo-name)/(any-tag)
+docker push (account-id).dkr.ecr.(region).amazonaws.com/(repo-name)/(any-tag)
 
 I referenced this blog post to set up my Fargate cluster
 https://itnext.io/run-your-containers-on-aws-fargate-c2d4f6a47fda
