@@ -4,7 +4,7 @@ This application uses C#/.NET, S3, and MailKit to take in an Uploaded file, uplo
 
 ## setup
 
-## _View webpage  ~Not currently hosted~
+## _~View webpage~  Not currently hosted
 
 ## Bugs
 
